@@ -9,6 +9,7 @@ using LMS.Data;
 using LMS.Models;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace LMS.Controllers
 {
@@ -16,16 +17,18 @@ namespace LMS.Controllers
     public class BooksController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public BooksController(ApplicationDbContext context)
+        public BooksController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: Books
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Books.ToListAsync());
+            return View(await _context.Books.ToListAsync());
         }
 
         // show search form
@@ -38,10 +41,10 @@ namespace LMS.Controllers
         // show search result
         public async Task<IActionResult> ShowSearchResult(string searchPhrase)
         {
-            return View("Index", await _context.Books.Where( b => b.Title.Contains(searchPhrase)).ToListAsync());
+            return View("Index", await _context.Books.Where(b => b.Title.Contains(searchPhrase)).ToListAsync());
         }
 
-        [Authorize(Roles="Admin")]
+        [Authorize(Roles = "Admin")]
         // GET: Books/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -172,14 +175,31 @@ namespace LMS.Controllers
             {
                 _context.Books.Remove(books);
             }
-            
+
             await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> AddUserBooks(int id)
+        {
+            var books = await _context.Books.FindAsync(id);
+            if (books != null)
+            {
+                var loggedInUserId = _httpContextAccessor?.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                UserBook userBook = new()
+                {
+                    BookId = id,
+                    UserId = loggedInUserId
+                };
+                await _context.UserBooks.AddAsync(userBook);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
 
         private bool BooksExists(int id)
         {
-          return _context.Books.Any(e => e.ID == id);
+            return _context.Books.Any(e => e.ID == id);
         }
     }
 }
