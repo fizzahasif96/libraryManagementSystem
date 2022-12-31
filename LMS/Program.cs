@@ -1,3 +1,4 @@
+using IdentityProvider.Seed;
 using LMS.Areas.Identity.ClaimsFactory;
 using LMS.Data;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +25,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.Sign
     .AddClaimsPrincipalFactory<ApplicationUserClaimsPrincipalFactory>()
     .AddDefaultTokenProviders()
     .AddDefaultUI();
-
+builder.Services.AddHostedService<SeedWorker>();
 
 builder.Services.AddControllersWithViews();
 

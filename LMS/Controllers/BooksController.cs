@@ -44,7 +44,7 @@ namespace LMS.Controllers
             return View("Index", await _context.Books.Where(b => b.Title.Contains(searchPhrase)).ToListAsync());
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         // GET: Books/Details/5
         public async Task<IActionResult> Details(int? id)
         {
