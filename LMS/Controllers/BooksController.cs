@@ -31,6 +31,14 @@ namespace LMS.Controllers
             return View(await _context.Books.ToListAsync());
         }
 
+        public async Task<IActionResult> GetUserBooks()
+        {
+            var loggedInUserId = _httpContextAccessor?.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userBookIds = await _context.UserBooks.Where(x => x.UserId == loggedInUserId).Select(x => x.BookId).ToListAsync();
+            var books = await _context.Books.Where(x => userBookIds.Contains(x.ID)).ToListAsync();
+            return View(books);
+        }
+
         // show search form
         public async Task<IActionResult> ShowSearchForm()
         {
