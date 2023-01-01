@@ -196,6 +196,7 @@ namespace LMS.Controllers
             if (books != null && books.Status == Status.Available)
             {
                 books.Count = books.Count - 1;
+                books.Status = books.Count > 0 ? Status.Available : Status.NotAvailable;
                 var loggedInUserId = _httpContextAccessor?.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 UserBook userBook = new()
                 {
