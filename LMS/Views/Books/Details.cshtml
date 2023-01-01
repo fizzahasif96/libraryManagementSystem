@@ -10,28 +10,28 @@
     <h4>Books</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Title)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Author)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Author)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Price)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Price)
         </dd>
     </dl>
@@ -41,6 +41,9 @@
     {
         <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a>
     }
-    <a asp-action="AddUserBooks" asp-route-id="@Model?.ID">Buy</a>|
+    if(@Model.Count > 0 )
+    {
+        <a asp-action="AddUserBooks" asp-route-id="@Model?.ID">Buy</a>|
+    }
     <a asp-action="Index">Back to List</a>
 </div>

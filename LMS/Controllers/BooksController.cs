@@ -89,6 +89,7 @@ namespace LMS.Controllers
         {
             if (ModelState.IsValid)
             {
+                books.Status = books.Count > 0 ? Status.Available : Status.NotAvailable;
                 _context.Add(books);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -191,8 +192,9 @@ namespace LMS.Controllers
         public async Task<IActionResult> AddUserBooks(int id)
         {
             var books = await _context.Books.FindAsync(id);
-            if (books != null)
+            if (books != null && books.Status == Status.Available)
             {
+                books.Count = books.Count - 1;
                 var loggedInUserId = _httpContextAccessor?.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 UserBook userBook = new()
                 {
@@ -201,6 +203,8 @@ namespace LMS.Controllers
                 };
                 await _context.UserBooks.AddAsync(userBook);
                 await _context.SaveChangesAsync();
+                
+
             }
             return RedirectToAction(nameof(Index));
         }
