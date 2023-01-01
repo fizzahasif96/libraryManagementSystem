@@ -85,7 +85,7 @@ namespace LMS.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Title,Description,Author,Price")] Books books)
+        public async Task<IActionResult> Create([Bind("ID,Title,Description,Author,Price,Count")] Books books)
         {
             if (ModelState.IsValid)
             {
@@ -120,7 +120,7 @@ namespace LMS.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Title,Description,Author,Price")] Books books)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Title,Description,Author,Price,Count")] Books books)
         {
             if (id != books.ID)
             {
@@ -131,6 +131,7 @@ namespace LMS.Controllers
             {
                 try
                 {
+                    books.Status = books.Count > 0 ? Status.Available : Status.NotAvailable;
                     _context.Update(books);
                     await _context.SaveChangesAsync();
                 }
