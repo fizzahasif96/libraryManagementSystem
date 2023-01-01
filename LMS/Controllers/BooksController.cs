@@ -204,8 +204,6 @@ namespace LMS.Controllers
                 };
                 await _context.UserBooks.AddAsync(userBook);
                 await _context.SaveChangesAsync();
-                
-
             }
             return RedirectToAction(nameof(Index));
         }
